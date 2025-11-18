@@ -1,0 +1,213 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register – GradeMate</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    <!-- Tailwind Custom Theme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "gm-primary": "#4f46e5",
+                        "gm-light": "#a5b4fc"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[#f5f4ff]">
+
+    <!-- Background Blobs -->
+    <div class="fixed top-[-200px] left-[-100px] w-[500px] h-[500px] bg-gm-light rounded-full blur-[120px] opacity-40"></div>
+    <div class="fixed bottom-[-200px] right-[-100px] w-[500px] h-[500px] bg-gm-primary rounded-full blur-[120px] opacity-40"></div>
+
+    <!-- Main Wrapper -->
+    <div class="min-h-screen flex items-center justify-center p-6">
+        
+        <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+
+            <!-- LEFT PANEL -->
+            <div class="bg-gm-primary text-white p-10 flex flex-col justify-center items-center">
+                <a href="{% url 'home' %}" class="text-4xl font-bold mb-4 inline-block">
+                    <svg class="w-28 h-28 mb-4 hover:scale-105 transition-transform duration-300"
+                         viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                    </svg>
+                </a>
+
+                <h1 class="text-3xl font-bold">Join GradeMate</h1>
+                <p class="text-gm-light mt-2 text-center">
+                    Smart, AI-powered academic management starts here.
+                </p>
+            </div>
+
+            <!-- RIGHT PANEL (FORM) -->
+            <div class="p-10 fade-in">
+
+                <h2 class="text-3xl font-bold text-gray-800">Create an Account</h2>
+                <p class="text-gray-500 mt-1 mb-8">Let’s get you set up.</p>
+
+                {% if form.errors %}
+                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                    Please fix the errors below.
+                </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="space-y-6">
+
+                        <!-- Username -->
+                        <div>
+                            {{ form.username.label_tag }}
+                            <input type="text" name="username" value="{{ form.username.value|default:'' }}"
+                                class="mt-1 w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg"
+                                placeholder="Choose a username" required>
+                        </div>
+
+                        <!-- Full Name -->
+                        <div>
+                            {{ form.name.label_tag }}
+                            <input type="text" name="name" value="{{ form.name.value|default:'' }}"
+                                class="mt-1 w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg"
+                                placeholder="Enter your name" required>
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            {{ form.email.label_tag }}
+                            <input type="email" name="email" value="{{ form.email.value|default:'' }}"
+                                class="mt-1 w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg"
+                                placeholder="Enter your email" required>
+                        </div>
+
+                        <!-- Mobile -->
+                        <div>
+                            {{ form.mobile.label_tag }}
+                            <input type="text" name="mobile" value="{{ form.mobile.value|default:'' }}"
+                                class="mt-1 w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg"
+                                placeholder="Enter your mobile number" required>
+                        </div>
+
+                        <!-- Role -->
+                        <div>
+                            {{ form.role.label_tag }}
+                            <select name="role" id="roleSelect"
+                                class="mt-1 w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg">
+                                
+                                <option value="">Select role</option>
+
+                                <option value="student"
+                                    {% if form.role.value == "student" %}selected{% endif %}>
+                                    Student
+                                </option>
+
+                                <option value="teacher"
+                                    {% if form.role.value == "teacher" %}selected{% endif %}>
+                                    Teacher
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <!-- Student ONLY Field -->
+                        <div id="studentField">
+                            {{ form.class_grade.label_tag }}
+                            <input type="text" name="class_grade" value="{{ form.class_grade.value|default:'' }}"
+                                class="mt-1 w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg"
+                                placeholder="Enter class/grade (e.g., 10th)" />
+                        </div>
+
+                        <!-- Teacher ONLY Field -->
+                        <div id="teacherField">
+                            {{ form.subject.label_tag }}
+                            <input type="text" name="subject" value="{{ form.subject.value|default:'' }}"
+                                class="mt-1 w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg"
+                                placeholder="Enter subject (e.g., Math)" />
+                        </div>
+
+                        <!-- Password -->
+                        <div>
+                            {{ form.password1.label_tag }}
+                            <input type="password" name="password1"
+                                class="mt-1 w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg"
+                                placeholder="Create a password" required>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div>
+                            {{ form.password2.label_tag }}
+                            <input type="password" name="password2"
+                                class="mt-1 w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg"
+                                placeholder="Confirm your password" required>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit"
+                            class="w-full py-3 bg-gm-primary text-white rounded-lg font-semibold 
+                                   hover:bg-gm-primary/90 transition-transform hover:scale-105">
+                            Register
+                        </button>
+
+                    </div>
+                </form>
+
+                <p class="mt-8 text-center text-sm text-gray-500">
+                    Already have an account?
+                    <a href="{% url 'login' %}" class="text-gm-primary hover:text-gm-light font-semibold">
+                        Login here
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role Logic -->
+    <script>
+        function updateFields() {
+            const role = document.getElementById("roleSelect").value;
+            const student = document.getElementById("studentField");
+            const teacher = document.getElementById("teacherField");
+
+            if (role === "student") {
+                student.style.display = "block";
+                teacher.style.display = "none";
+            } else if (role === "teacher") {
+                teacher.style.display = "block";
+                student.style.display = "none";
+            } else {
+                student.style.display = "none";
+                teacher.style.display = "none";
+            }
+        }
+
+        document.getElementById("roleSelect").addEventListener("change", updateFields);
+        updateFields();
+    </script>
+
+</body>
+</html>
