@@ -1,0 +1,58 @@
+{% extends "Student/base.html" %}
+
+{% block title %}Upload Answer - Student Portal{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="card p-6">
+        <h1 class="text-3xl font-bold text-gray-200 mb-6">Submit Your Answer</h1>
+        <p class="text-gray-300 mb-6">Select a question and provide your answer. Our AI will evaluate it automatically.</p>
+
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-4 mb-2 rounded-lg {% if message.tags == 'success' %}bg-green-900 border border-green-700{% elif message.tags == 'error' %}bg-red-900 border border-red-700{% else %}bg-blue-900 border border-blue-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <div>
+                <label for="{{ form.question.id_for_label }}" class="block text-sm font-medium text-gray-200 mb-2">
+                    {{ form.question.label }}
+                </label>
+                {{ form.question }}
+                {% if form.question.errors %}
+                    <p class="mt-1 text-sm text-red-400">{{ form.question.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.answer_text.id_for_label }}" class="block text-sm font-medium text-gray-200 mb-2">
+                    {{ form.answer_text.label }}
+                </label>
+                {{ form.answer_text }}
+                {% if form.answer_text.errors %}
+                    <p class="mt-1 text-sm text-red-400">{{ form.answer_text.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="pt-4">
+                <button type="submit" class="btn-primary w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Submit Answer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

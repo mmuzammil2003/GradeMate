@@ -1,0 +1,48 @@
+{% extends "Teacher/base.html" %}
+
+{% block title %}{% if object %}Edit{% else %}Create{% endif %} Question - Teacher Portal{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="card p-6">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">
+            {% if object %}Edit Question{% else %}Create New Question{% endif %}
+        </h1>
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <div>
+                <label for="{{ form.question_text.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    {{ form.question_text.label }}
+                </label>
+                {{ form.question_text }}
+                {% if form.question_text.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.question_text.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.model_answer.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    {{ form.model_answer.label }}
+                </label>
+                {{ form.model_answer }}
+                {% if form.model_answer.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.model_answer.errors.0 }}</p>
+                {% endif %}
+                <p class="mt-1 text-sm text-gray-500">This is the expected answer that will be used for AI evaluation.</p>
+            </div>
+
+            <div class="flex space-x-4 pt-4">
+                <button type="submit" class="btn-primary">
+                    {% if object %}Update Question{% else %}Create Question{% endif %}
+                </button>
+                <a href="{% url 'question_list' %}" class="btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
