@@ -7,7 +7,7 @@
     <div class="max-w-5xl mx-auto">
         <!-- Back Link and Header -->
         <div class="mb-6">
-            <a href="{% url 'assignment_list' %}" class="text-blue-600 hover:underline transition-colors">
+            <a href="{% url 'Teacher:assignment_list' %}" class="text-blue-600 hover:underline transition-colors">
                 &larr; Back to All Assignments
             </a>
         </div>
@@ -18,8 +18,8 @@
                 <p class="text-gray-500 mt-1">Manage assignment details and track student progress.</p>
             </div>
             <div class="flex items-center gap-2 mt-4 sm:mt-0">
-                <a href="{% url 'assignment_edit' assignment.id %}" class="btn-secondary font-semibold py-2 px-4">Edit</a>
-                <a href="{% url 'assignment_delete' assignment.id %}" class="btn-secondary font-semibold py-2 px-4 hover:bg-red-50 hover:border-red-300 hover:text-red-700">Delete</a>
+                <a href="{% url 'Teacher:assignment_update' assignment.pk %}" class="btn-secondary font-semibold py-2 px-4">Edit</a>
+                <a href="{% url 'Teacher:assignment_delete' assignment.pk %}" class="btn-secondary font-semibold py-2 px-4 hover:bg-red-50 hover:border-red-300 hover:text-red-700">Delete</a>
             </div>
         </div>
 
@@ -38,7 +38,11 @@
                         <div>
                             <h4 class="font-semibold text-gray-500">Rubric / Answer Key</h4>
                             <div class="prose prose-sm sm:prose-base text-gray-700 max-w-none bg-gray-50 p-4 mt-1 rounded-md border border-gray-200">
-                                {{ assignment.answer_key|linebreaks }}
+                                {% if assignment.key_answer_text %}
+                                    {{ assignment.key_answer_text|linebreaks }}
+                                {% else %}
+                                    <p class="text-gray-500 italic">No answer key text available. Upload a key answer file to extract text.</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -49,19 +53,19 @@
                     <h3 class="text-xl font-bold text-gray-900 mb-4">Submission Statistics</h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                         <div class="bg-gray-50 p-4 rounded-md">
-                            <p class="text-3xl font-bold text-blue-600">{{ total_students_count }}</p>
+                            <p class="text-3xl font-bold text-blue-600">{{ total_students|default:0 }}</p>
                             <p class="text-sm font-semibold text-gray-500">Total Students</p>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-md">
-                            <p class="text-3xl font-bold text-green-600">{{ submitted_count }}</p>
+                            <p class="text-3xl font-bold text-green-600">{{ submitted_count|default:0 }}</p>
                             <p class="text-sm font-semibold text-gray-500">Submitted</p>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-md">
-                            <p class="text-3xl font-bold text-yellow-500">{{ pending_count }}</p>
+                            <p class="text-3xl font-bold text-yellow-500">{{ pending_count|default:0 }}</p>
                             <p class="text-sm font-semibold text-gray-500">Pending</p>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-md">
-                            <p class="text-3xl font-bold text-gray-900">{{ average_score|default:"N/A" }}%</p>
+                            <p class="text-3xl font-bold text-gray-900">{% if average_score %}{{ average_score }}%{% else %}N/A{% endif %}</p>
                             <p class="text-sm font-semibold text-gray-500">Avg. Score</p>
                         </div>
                     </div>
@@ -76,9 +80,8 @@
                     <ul class="space-y-3 text-sm">
                         <li class="flex justify-between">
                             <span class="text-gray-500">Status:</span>
-                            {% if assignment.status == 'active' %}<span class="status-pill status-active">Active</span>
-                            {% elif assignment.status == 'draft' %}<span class="status-pill status-draft">Draft</span>
-                            {% else %}<span class="status-pill status-expired">Expired</span>{% endif %}
+                            {% if assignment.is_active %}<span class="status-pill status-active">Active</span>
+                            {% else %}<span class="status-pill status-expired">Inactive</span>{% endif %}
                         </li>
                         <li class="flex justify-between"><span class="text-gray-500">Subject:</span> <span class="font-semibold">{{ assignment.subject }}</span></li>
                         <li class="flex justify-between"><span class="text-gray-500">Max Score:</span> <span class="font-semibold">{{ assignment.max_score }} points</span></li>
@@ -91,7 +94,7 @@
                 <div class="card p-6">
                     <h3 class="text-xl font-bold text-gray-900 mb-4">Quick Actions</h3>
                     <div class="space-y-3">
-                        <a href="{% url 'submission_list' assignment.id %}" class="btn-primary w-full text-center font-semibold py-2.5 block">View Submissions</a>
+                        <a href="{% url 'Teacher:TSubmissionList' %}" class="btn-primary w-full text-center font-semibold py-2.5 block">View Submissions</a>
                         <a href="#" class="btn-secondary w-full text-center font-semibold py-2.5 block">Download Results</a>
                         <a href="#" class="btn-secondary w-full text-center font-semibold py-2.5 block">Send Reminder</a>
                     </div>

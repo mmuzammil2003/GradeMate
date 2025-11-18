@@ -7,7 +7,7 @@
 {% block content %}
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
         <h2 class="text-3xl font-bold text-white">Teacher Dashboard</h2>
-        <a href="#" class="btn-primary font-semibold py-2 px-4 flex items-center gap-2 mt-4 sm:mt-0">
+        <a href="{% url 'Teacher:assignment_create' %}" class="btn-primary font-semibold py-2 px-4 flex items-center gap-2 mt-4 sm:mt-0">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             New Assignment
         </a>
@@ -17,11 +17,11 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="card p-6">
             <h3 class="text-gray-500 font-semibold">Total Assignments</h3>
-            <p class="text-4xl font-bold text-gray-900 mt-2">{{ total_assignments_count|default:"0" }}</p>
+            <p class="text-4xl font-bold text-gray-900 mt-2">{{ total_assignments_count|default:0 }}</p>
         </div>
         <div class="card p-6">
-            <h3 class="text-gray-500 font-semibold">Active Students</h3>
-            <p class="text-4xl font-bold text-gray-900 mt-2">{{ active_students_count|default:"0" }}</p>
+            <h3 class="text-gray-500 font-semibold">Active Assignments</h3>
+            <p class="text-4xl font-bold text-gray-900 mt-2">{{ active_assignments|default:0 }}</p>
         </div>
         <div class="card p-6">
             <h3 class="text-gray-500 font-semibold">Overall Avg. Grade</h3>
@@ -29,7 +29,7 @@
         </div>
         <div class="card p-6">
             <h3 class="text-gray-500 font-semibold">Pending Evaluations</h3>
-            <p class="text-4xl font-bold text-blue-600 mt-2">{{ pending_evaluations_count|default:"0" }}</p>
+            <p class="text-4xl font-bold text-blue-600 mt-2">{{ pending_evaluations_count|default:0 }}</p>
         </div>
     </div>
 
@@ -40,23 +40,21 @@
            <div class="flex justify-between items-center mb-4">
 
                 <h3 class="text-xl font-bold text-white">Recent Assignments</h3>
-                <a href="" class="text-sm text-blue-400 hover:underline">View All</a>
+                <a href="{% url 'Teacher:assignment_list' %}" class="text-sm text-blue-400 hover:underline">View All</a>
            </div>
             <div class="space-y-3">
                 {% for assignment in recent_assignments %}
-                <a href="{% url 'assignment_detail' assignment.id %}" class="block bg-gray-50 p-4 rounded-md border border-gray-200 hover:border-blue-500 transition-colors">
+                <a href="{% url 'Teacher:assignment_detail' assignment.pk %}" class="block bg-gray-50 p-4 rounded-md border border-gray-200 hover:border-blue-500 transition-colors">
                     <div class="flex justify-between items-center">
                         <div>
                             <h4 class="font-bold text-gray-900">{{ assignment.title }}</h4>
                             <p class="text-sm text-gray-500">Due: {{ assignment.due_date|date:"M d, Y" }}</p>
                         </div>
                         <div class="flex items-center gap-4">
-                            {% if assignment.status == 'active' %}
-                                <span class="status-pill status-active">Active</span>
-                            {% elif assignment.status == 'draft' %}
-                                <span class="status-pill status-draft">Draft</span>
+                            {% if assignment.is_active %}
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">Active</span>
                             {% else %}
-                                <span class="status-pill status-expired">Expired</span>
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">Inactive</span>
                             {% endif %}
                         </div>
                     </div>
@@ -74,13 +72,13 @@
             <h3 class="text-xl font-bold text-gray-900 mb-4">Pending Evaluations</h3>
             <div class="space-y-3">
                 {% for assignment in pending_evaluation_assignments %}
-                <a href="{% url 'submission_list' assignment.id %}" class="block bg-gray-50 p-4 rounded-md border border-gray-200 hover:border-green-500 transition-colors">
+                <a href="{% url 'Teacher:assignment_detail' assignment.pk %}" class="block bg-gray-50 p-4 rounded-md border border-gray-200 hover:border-green-500 transition-colors">
                     <div class="flex justify-between items-center">
                         <div>
                             <h4 class="font-bold text-gray-900">{{ assignment.title }}</h4>
-                            <p class="text-sm text-gray-500">{{ assignment.submissions.count }} new submission{{ assignment.submissions.count|pluralize }}</p>
+                            <p class="text-sm text-gray-500">{{ assignment.submissions.count }} submission{{ assignment.submissions.count|pluralize }}</p>
                         </div>
-                        <button class="btn-secondary py-2 px-4">Review</button>
+                        <span class="btn-secondary py-2 px-4">Review</span>
                     </div>
                 </a>
                 {% empty %}

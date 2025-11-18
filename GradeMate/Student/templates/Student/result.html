@@ -60,10 +60,10 @@
 
         <!-- Action Buttons -->
         <div class="mt-6 flex space-x-4">
-            <a href="{% url 'upload_answer' %}" class="btn-primary">
+            <a href="{% url 'Student:upload_answer' %}" class="btn-primary">
                 Submit Another Answer
             </a>
-            <a href="{% url 'Sdashboard' %}" class="btn-secondary">
+            <a href="{% url 'Student:Sdashboard' %}" class="btn-secondary">
                 Back to Dashboard
             </a>
         </div>
@@ -77,4 +77,5 @@
     {% endif %}
 </div>
 {% endblock %}
+
 

@@ -16,13 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("",include("USER.urls")),
-    path("Student/",include("Student.urls")),
-    path("Teacher/",include("Teacher.urls")),
+    path("Student/",include(("Student.urls", "Student"), namespace="Student")),
+    path("Teacher/",include(("Teacher.urls", "Teacher"), namespace="Teacher")),
     # Lowercase aliases for compatibility
-    path("child/",include("Student.urls")),
-    path("teacher/",include("Teacher.urls"))
+    path("child/",include(("Student.urls", "Student"), namespace="Student")),
+    path("teacher/",include(("Teacher.urls", "Teacher"), namespace="Teacher"))
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -8,7 +8,7 @@
         <!-- Header and Create Button -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
             <h2 class="text-3xl font-bold text-gray-900">My Assignments</h2>
-            <a href="{% url 'TAssignment' %}" class="btn-primary font-semibold py-2 px-4 flex items-center gap-2 mt-4 sm:mt-0">
+            <a href="{% url 'Teacher:assignment_create' %}" class="btn-primary font-semibold py-2 px-4 flex items-center gap-2 mt-4 sm:mt-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 Create New Assignment
             </a>
@@ -18,7 +18,7 @@
         <div class="card p-6 sm:p-8">
             <div class="space-y-4">
                 {% for assignment in assignments %}
-                <a href="{% url 'assignment_detail' assignment.id %}" class="block bg-gray-50 p-4 rounded-md border border-gray-200 hover:border-blue-500 transition-colors">
+                <a href="{% url 'Teacher:assignment_detail' assignment.pk %}" class="block bg-gray-50 p-4 rounded-md border border-gray-200 hover:border-blue-500 transition-colors">
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                         <!-- Left Side: Title and Details -->
                         <div class="mb-3 sm:mb-0">
@@ -36,12 +36,10 @@
                         
                         <!-- Right Side: Status and Action -->
                         <div class="flex items-center gap-4 w-full sm:w-auto">
-                            {% if assignment.status == 'active' %}
+                            {% if assignment.is_active %}
                                 <span class="status-pill status-active w-full sm:w-auto text-center">Active</span>
-                            {% elif assignment.status == 'draft' %}
-                                <span class="status-pill status-draft w-full sm:w-auto text-center">Draft</span>
                             {% else %}
-                                <span class="status-pill status-expired w-full sm:w-auto text-center">Expired</span>
+                                <span class="status-pill status-expired w-full sm:w-auto text-center">Inactive</span>
                             {% endif %}
                             <button class="btn-secondary py-2 px-4 w-full sm:w-auto">View Details</button>
                         </div>

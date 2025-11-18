@@ -23,7 +23,7 @@
         <div class="card p-6 sm:p-8">
             <div class="divide-y divide-gray-200">
                 {% for submission in submissions %}
-                <a href="{% url 'submission_detail' submission.id %}" class="block p-4 -mx-4 hover:bg-gray-50 rounded-md transition-colors">
+                <a href="{% url 'Teacher:submission_detail' submission.pk %}" class="block p-4 -mx-4 hover:bg-gray-50 rounded-md transition-colors">
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                         <!-- Student Info -->
                         <div class="mb-3 sm:mb-0">

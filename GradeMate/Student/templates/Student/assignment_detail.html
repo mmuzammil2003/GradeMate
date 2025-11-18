@@ -1,0 +1,112 @@
+{% extends 'Student/base.html' %}
+{% load static %}
+
+{% block title %}{{ assignment.title }} - Assignment{% endblock %}
+
+{% block content %}
+    <div class="max-w-4xl mx-auto">
+        <!-- Back to Dashboard Link -->
+        <div class="mb-6">
+            <a href="{% url 'Student:Sdashboard' %}" class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">
+                &larr; Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Main Assignment Card -->
+        <div class="card p-6 sm:p-8 mb-6">
+            <!-- Header Section -->
+            <div class="border-b border-gray-200 pb-4 mb-6">
+                <h2 class="text-3xl font-bold text-gray-900">{{ assignment.title }}</h2>
+                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-2 text-gray-500 text-sm">
+                    <span>Due Date: <span class="font-semibold text-red-600">{{ assignment.due_date|date:"F d, Y, P" }}</span></span>
+                    <span>Max Score: <span class="font-semibold text-gray-700">{{ assignment.max_score }} Points</span></span>
+                    <span>Subject: <span class="font-semibold text-gray-700">{{ assignment.subject.name }}</span></span>
+                    <span>Teacher: <span class="font-semibold text-gray-700">{{ assignment.teacher.name }}</span></span>
+                </div>
+            </div>
+
+            <!-- Assignment Description -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Instructions</h3>
+                <div class="prose prose-sm sm:prose-base text-gray-600 max-w-none">
+                    {{ assignment.description|linebreaks }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Submission Status -->
+        {% if submission %}
+        <div class="card p-6 mb-6 bg-green-50 border border-green-200">
+            <h3 class="text-lg font-semibold text-green-800 mb-2">✓ Assignment Submitted</h3>
+            <p class="text-sm text-green-700">Submitted on: {{ submission.submitted_at|date:"F d, Y, P" }}</p>
+            {% if submission.is_graded %}
+                <div class="mt-4">
+                    <a href="{% url 'Student:assignment_result' submission.pk %}" class="btn-primary inline-block">
+                        View Results
+                    </a>
+                </div>
+            {% else %}
+                <p class="text-sm text-green-700 mt-2">Evaluation in progress...</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Submission Form Section -->
+        {% if not submission or not submission.is_graded %}
+        <div class="card p-6 sm:p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">{% if submission %}Resubmit{% else %}Submit{% endif %} Your Assignment</h3>
+            
+            <form method="post" action="{% url 'Student:submit_assignment' assignment_id=assignment.pk %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {% if messages %}
+                    <div class="mb-4">
+                        {% for message in messages %}
+                            <div class="p-4 mb-2 rounded-lg {% if message.tags == 'success' %}bg-green-900 border border-green-700{% elif message.tags == 'error' %}bg-red-900 border border-red-700{% else %}bg-blue-900 border border-blue-700{% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- File Upload Input -->
+                <div class="mb-4">
+                    <label for="{{ form.file.id_for_label }}" class="block text-sm font-medium text-gray-200 mb-2">
+                        {{ form.file.label }}
+                    </label>
+                    {{ form.file }}
+                    {% if form.file.errors %}
+                        <p class="mt-1 text-sm text-red-400">{{ form.file.errors.0 }}</p>
+                    {% endif %}
+                    <p class="mt-1 text-sm text-gray-400">Accepted formats: PDF, DOC, DOCX, TXT, PNG, JPG, JPEG, WEBP</p>
+                </div>
+
+                <!-- Text Area for direct answers -->
+                <div class="mb-6">
+                    <label for="{{ form.answer_text.id_for_label }}" class="block text-sm font-medium text-gray-200 mb-2">
+                        {{ form.answer_text.label }}
+                    </label>
+                    {{ form.answer_text }}
+                    {% if form.answer_text.errors %}
+                        <p class="mt-1 text-sm text-red-400">{{ form.answer_text.errors.0 }}</p>
+                    {% endif %}
+                    <p class="mt-1 text-sm text-gray-400">Enter your answer here, or upload a file (text will be extracted automatically)</p>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="text-right">
+                    <button type="submit" class="btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        {% if submission %}Resubmit{% else %}Submit{% endif %} Assignment
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
+

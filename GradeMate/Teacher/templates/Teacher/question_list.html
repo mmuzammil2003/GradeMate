@@ -7,7 +7,7 @@
     <div class="card p-6 mb-6">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-gray-900">Questions Management</h1>
-            <a href="{% url 'question_create' %}" class="btn-primary">
+            <a href="{% url 'Teacher:question_create' %}" class="btn-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -57,10 +57,10 @@
                             <td class="py-3 px-4 text-sm text-gray-600">{{ question.created_at|date:"M d, Y" }}</td>
                             <td class="py-3 px-4">
                                 <div class="flex space-x-2">
-                                    <a href="{% url 'question_update' question.pk %}" class="btn-secondary text-sm py-1 px-3">
+                                    <a href="{% url 'Teacher:question_update' question.pk %}" class="btn-secondary text-sm py-1 px-3">
                                         Edit
                                     </a>
-                                    <a href="{% url 'question_delete' question.pk %}" class="btn-secondary text-sm py-1 px-3 bg-red-50 text-red-700 hover:bg-red-100">
+                                    <a href="{% url 'Teacher:question_delete' question.pk %}" class="btn-secondary text-sm py-1 px-3 bg-red-50 text-red-700 hover:bg-red-100">
                                         Delete
                                     </a>
                                 </div>
@@ -81,4 +81,5 @@
     </div>
 </div>
 {% endblock %}
+
 
