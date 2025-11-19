@@ -1,0 +1,57 @@
+{% extends 'Student/base.html' %}
+{% load static %}
+
+{% block title %}Result for {{ result.assignment.title }}{% endblock %}
+
+{% block content %}
+    <div class="max-w-4xl mx-auto">
+        <!-- Back to Results List Link -->
+        <div class="mb-6">
+
+            <a href="{% url 'result' %}" class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">
+                &larr; Back to All Results
+            </a>
+        </div>
+
+        <!-- Main Result Detail Card -->
+        <div class="card p-6 sm:p-8">
+
+            <!-- Header: Title and Score -->
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start border-b border-gray-700 pb-4 mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-white">{{ result.assignment.title }}</h2>
+                    <p class="text-sm text-gray-400">
+                        Subject: {{ result.assignment.subject }} | Submitted: {{ result.submission_date|date:"M d, Y" }}
+                    </p>
+                </div>
+                <div class="text-right">
+                    <p class="text-2xl font-bold 
+                        {% if result.score >= 90 %}text-green-400
+                        {% elif result.score >= 80 %}text-blue-400
+                        {% elif result.score >= 70 %}text-yellow-400
+                        {% else %}text-red-400{% endif %}">
+                        {{ result.score }} / {{ result.assignment.max_score }}
+                    </p>
+                    <p class="text-sm 
+                        {% if result.score >= 90 %}text-green-400
+                        {% elif result.score >= 80 %}text-blue-400
+                        {% elif result.score >= 70 %}text-yellow-400
+                        {% else %}text-red-400{% endif %}">
+                        {% if result.score >= 90 %}Excellent
+                        {% elif result.score >= 80 %}Good
+                        {% elif result.score >= 70 %}Fair
+                        {% else %}Needs Improvement{% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Feedback / Teacher's Comments -->
+            <div>
+                <h3 class="text-xl font-semibold text-white mb-2">Feedback</h3>
+                <p class="text-gray-300">
+                    {{ result.feedback|default:"No feedback provided." }}
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

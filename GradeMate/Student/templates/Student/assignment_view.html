@@ -1,0 +1,75 @@
+{% extends 'Student/base.html' %}
+{% load static %}
+
+{% block title %}{{ assignment.title }} - Assignment View{% endblock %}
+
+{% block content %}
+    <div class="max-w-4xl mx-auto">
+        <!-- Back to Dashboard Link -->
+        <div class="mb-6">
+
+            <a href="{% url 'Sdashboard' %}" class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">
+                &larr; Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Main Assignment Card -->
+        <div class="card p-6 sm:p-8">
+            <!-- Header Section -->
+            <div class="border-b border-gray-200 pb-4 mb-6">
+                <h2 class="text-3xl font-bold text-gray-900">{{ assignment.title }}</h2>
+                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-2 text-gray-500 text-sm">
+                    <span>Due Date: <span class="font-semibold text-red-600">{{ assignment.due_date|date:"F d, Y, P" }}</span></span>
+                    <span>Max Score: <span class="font-semibold text-gray-700">{{ assignment.max_score }} Points</span></span>
+                    <span>Subject: <span class="font-semibold text-gray-700">{{ assignment.subject }}</span></span>
+                </div>
+            </div>
+
+            <!-- Assignment Description -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Instructions</h3>
+                <div class="prose prose-sm sm:prose-base text-gray-600 max-w-none">
+                    {{ assignment.description|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Answer Key / Rubric (Optional) -->
+            {% if assignment.answer_key %}
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Rubric / Guidelines</h3>
+                <div class="prose prose-sm sm:prose-base text-gray-600 max-w-none bg-gray-50 p-4 rounded-md border border-gray-200">
+                    {{ assignment.answer_key|linebreaks }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Submission Form Section -->
+            <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4 border-t border-gray-200 pt-6">Submit Your Assignment</h3>
+                
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Text Area for direct answers -->
+                    <div class="mb-4">
+                        <label for="text_submission" class="block text-sm font-medium text-gray-700 mb-2">Your Answer</label>
+                        <textarea id="text_submission" name="text_submission" rows="10" class="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"></textarea>
+                    </div>
+
+                    <!-- File Upload Input -->
+                    <div class="mb-6">
+                         <label for="file_submission" class="block text-sm font-medium text-gray-700 mb-2">Or Upload a File</label>
+                         <input type="file" id="file_submission" name="file_submission" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-800 hover:file:bg-gray-300 transition">
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="text-right">
+                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-md transition-colors">
+                            Submit Assignment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'Student/base.html' %}
+{% load static %}
+
+{% block title %}Result for {{ result.assignment.title }}{% endblock %}
+
+{% block content %}
+    <div class="max-w-4xl mx-auto">
+        <!-- Back to Results List Link -->
+        <div class="mb-6">
+            <a href="{% url 'result' %}" class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">
+                &larr; Back to All Results
+            </a>
+        </div>
+
+        <!-- Main Result Detail Card -->
+        <div class="card p-6 sm:p-8">
+            <!-- Header: Title and Score -->
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start border-b border-gray-200 pb-4 mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900">{{ result.assignment.title }}</h2>
+                    <p class="text-sm text-gray-500 mt-1">Graded on: {{ result.graded_date|date:"F d, Y" }}</p>
+                </div>
+                <div class="text-left sm:text-right mt-4 sm:mt-0">
+                    <p class="text-4xl font-bold {% if result.score >= 90 %}text-green-600{% elif result.score >= 80 %}text-blue-600{% else %}text-yellow-500{% endif %}">
+                        {{ result.score }} / {{ result.assignment.max_score }}
+                    </p>
+                    <p class="text-lg font-semibold {% if result.score >= 90 %}text-green-600{% elif result.score >= 80 %}text-blue-600{% else %}text-yellow-500{% endif %}">
+                        {% if result.score >= 90 %}Excellent{% elif result.score >= 80 %}Good{% elif result.score >= 70 %}Fair{% else %}Needs Improvement{% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Teacher's Feedback -->
+            <div class="mb-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Teacher's Feedback</h3>
+                <div class="card p-4 bg-gray-50">
+                    {% if result.feedback %}
+                    <p class="text-gray-700">{{ result.feedback|linebreaks }}</p>
+                    {% else %}
+                    <p class="text-gray-500">No feedback was provided for this assignment.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- AI Evaluation Report -->
+            <div class="mb-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-3">AI Evaluation Report</h3>
+                <div class="card p-4 flex items-center space-x-4 bg-gray-50">
+                    <div class="flex-shrink-0">
+                        <!-- Plagiarism Score Circle -->
+                        <div class="relative h-20 w-20">
+                            <svg class="h-full w-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2"></circle>
+                                <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-red-500" stroke-width="2" stroke-dasharray="{{ result.plagiarism_score|default:0 }}, 100" stroke-dashoffset="0" transform="rotate(-90 18 18)"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-xl font-bold text-gray-900">{{ result.plagiarism_score|default:0 }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-900">Plagiarism & Similarity Score</h4>
+                        <p class="text-gray-600">This score represents the percentage of similarity detected when comparing your submission against online sources and other student papers.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Original Submission -->
+            <div class="border-t border-gray-200 pt-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Your Submission</h3>
+                <div class="card p-4 space-y-4 bg-gray-50">
+                    {% if result.submission.text_submission %}
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-2">Submitted Text:</h4>
+                        <pre class="text-gray-600 whitespace-pre-wrap font-sans">{{ result.submission.text_submission }}</pre>
+                    </div>
+                    {% endif %}
+                    
+                    {% if result.submission.file_submission %}
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-2">Submitted File:</h4>
+                        <a href="{{ result.submission.file_submission.url }}" class="text-blue-600 hover:underline flex items-center space-x-2" download>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+                              <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z"/>
+                              <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 1.5v3A1.5 1.5 0 0 0 11 6h3V4.5h-2A1.5 1.5 0 0 1 9.5 3V1.5z"/>
+                            </svg>
+                            <span>{{ result.submission.get_filename }}</span>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

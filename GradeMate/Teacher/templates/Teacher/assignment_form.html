@@ -1,0 +1,83 @@
+{% extends 'Teacher/base.html' %}
+{% load static %}
+
+{% block title %}{% if assignment %}Edit Assignment{% else %}Create New Assignment{% endif %}{% endblock %}
+
+{% block content %}
+    <div class="max-w-4xl mx-auto">
+        <!-- Back Link -->
+        <div class="mb-6">
+            <a href="{% if assignment %}{% url 'assignment_detail' assignment.id %}{% else %}{% url 'TAssignment' %}{% endif %}" class="text-blue-600 hover:underline transition-colors">
+                &larr; Cancel
+            </a>
+        </div>
+
+        <!-- Main Form Card -->
+        <div class="card p-6 sm:p-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-4">
+                {% if assignment %}
+                    Edit "{{ assignment.title }}"
+                {% else %}
+                    Create New Assignment
+                {% endif %}
+            </h2>
+
+            <form method="post">
+                {% csrf_token %}
+                
+                {{ form.non_field_errors }}
+
+                <div class="space-y-6">
+                    <!-- Title Field -->
+                    <div>
+                        <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Assignment Title</label>
+                        <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" value="{{ form.title.value|default:'' }}" class="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Chapter 5 Math Quiz">
+                        {% if form.title.errors %}<p class="text-red-600 text-sm mt-1">{{ form.title.errors.as_text }}</p>{% endif %}
+                    </div>
+
+                    <!-- Subject Field -->
+                    <div>
+                        <label for="{{ form.subject.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                        <input type="text" name="{{ form.subject.name }}" id="{{ form.subject.id_for_label }}" value="{{ form.subject.value|default:'' }}" class="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Mathematics">
+                        {% if form.subject.errors %}<p class="text-red-600 text-sm mt-1">{{ form.subject.errors.as_text }}</p>{% endif %}
+                    </div>
+
+                    <!-- Description Field -->
+                    <div>
+                        <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Description / Instructions</label>
+                        <textarea name="{{ form.description.name }}" id="{{ form.description.id_for_label }}" rows="6" class="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Provide clear instructions for the students...">{{ form.description.value|default:'' }}</textarea>
+                        {% if form.description.errors %}<p class="text-red-600 text-sm mt-1">{{ form.description.errors.as_text }}</p>{% endif %}
+                    </div>
+
+                    <!-- Answer Key / Rubric Field -->
+                    <div>
+                        <label for="{{ form.answer_key.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Rubric / Answer Key</label>
+                        <textarea name="{{ form.answer_key.name }}" id="{{ form.answer_key.id_for_label }}" rows="6" class="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Include grading criteria, key answers, or methodology guidelines...">{{ form.answer_key.value|default:'' }}</textarea>
+                        {% if form.answer_key.errors %}<p class="text-red-600 text-sm mt-1">{{ form.answer_key.errors.as_text }}</p>{% endif %}
+                    </div>
+                    
+                    <!-- Grid for Due Date and Max Score -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="{{ form.due_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
+                            <input type="datetime-local" name="{{ form.due_date.name }}" id="{{ form.due_date.id_for_label }}" value="{{ form.due_date.value|date:'Y-m-d\TH:i' }}" class="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            {% if form.due_date.errors %}<p class="text-red-600 text-sm mt-1">{{ form.due_date.errors.as_text }}</p>{% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.max_score.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Max Score</label>
+                            <input type="number" name="{{ form.max_score.name }}" id="{{ form.max_score.id_for_label }}" value="{{ form.max_score.value|default:'' }}" class="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 100">
+                            {% if form.max_score.errors %}<p class="text-red-600 text-sm mt-1">{{ form.max_score.errors.as_text }}</p>{% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="border-t border-gray-200 pt-6 text-right">
+                        <button type="submit" class="btn-primary font-semibold py-2.5 px-6">
+                            {% if assignment %}Save Changes{% else %}Create Assignment{% endif %}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
