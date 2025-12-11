@@ -190,8 +190,73 @@ class AssignmentUpdateView(LoginRequiredMixin, UpdateView):
         return Assignment.objects.filter(teacher=self.request.user)
     
     def form_valid(self, form):
-        messages.success(self.request, 'Assignment updated successfully!')
-        return super().form_valid(form)
+        # Extract text from key answer file if provided and text is empty
+        if form.instance.key_answer_file and not form.instance.key_answer_text:
+            try:
+                from Student.services.ocr import extract_text_from_file
+                file_path = form.instance.key_answer_file.path
+                if file_path:
+                    extracted_text = extract_text_from_file(file_path)
+                    if extracted_text:
+                        form.instance.key_answer_text = extracted_text
+            except Exception as e:
+                print(f"⚠️ Could not extract text from key answer file: {e}")
+        
+        # Save the form first
+        response = super().form_valid(form)
+        
+        # Refresh assignment from database to ensure we have the latest data
+        assignment = Assignment.objects.get(pk=form.instance.pk)
+        
+        # Create/update notifications for all students in the assigned classroom
+        # Use the utility function to find students
+        students = find_students_for_classroom(assignment.classroom)
+        
+        # Fallback: Also try direct classroom name matching and combine results
+        direct_match_students = User.objects.filter(
+            role='student',
+            class_grade__iexact=assignment.classroom.name
+        )
+        
+        # Combine both querysets to ensure we get all students
+        if students.exists() and direct_match_students.exists():
+            # Combine both querysets
+            student_ids = list(students.values_list('id', flat=True)) + list(direct_match_students.values_list('id', flat=True))
+            students = User.objects.filter(id__in=student_ids).distinct()
+        elif direct_match_students.exists() and not students.exists():
+            # Use direct match if utility function found nothing
+            students = direct_match_students
+        
+        notification_count = 0
+        updated_count = 0
+        
+        # Create or update notification for each student
+        update_message = f"Assignment updated: {assignment.title} in {assignment.subject.name}. Due: {assignment.due_date.strftime('%Y-%m-%d %H:%M')}"
+        
+        for student in students:
+            try:
+                notification, created = Notification.objects.update_or_create(
+                    assignment=assignment,
+                    student=student,
+                    defaults={
+                        'message': update_message,
+                        'is_read': False  # Always mark as unread when updated
+                    }
+                )
+                if created:
+                    notification_count += 1
+                else:
+                    updated_count += 1
+            except Exception as e:
+                print(f"⚠️ Error creating/updating notification for student {student.id}: {e}")
+                continue
+        
+        if notification_count > 0 or updated_count > 0:
+            messages.success(self.request, f'Assignment updated and notifications sent to {notification_count + updated_count} students! ({notification_count} new, {updated_count} updated)')
+        else:
+            messages.warning(self.request, f'Assignment updated but no students found for classroom "{assignment.classroom.name}". Please check that students have matching class_grade.')
+        
+        return response
 
 class AssignmentDeleteView(LoginRequiredMixin, DeleteView):
     model = Assignment

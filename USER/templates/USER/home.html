@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GradeMate – Instant, Fair, AI-Powered Grading</title>
+    
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'gm-primary': '#4f46e5',
+                        'gm-light': '#a5b4fc',
+                    }
+                },
+            },
+        }
+    </script>
+    
+    <style>
+        .hero-gradient {
+            background-image: linear-gradient(90deg, #4f46e5, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glow {
+            filter: blur(100px);
+            opacity: 0.15;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+
+<body class="bg-white font-sans text-gray-900 overflow-x-hidden">
+
+    <!-- NAVBAR -->
+    <nav class="flex justify-between items-center px-6 md:px-16 py-5 bg-white sticky top-0 z-50 transition-shadow duration-300 shadow-sm">
+        <a href="{% url 'home' %}" class="flex items-center gap-3">
+            <span class="text-3xl font-extrabold text-gm-primary">GradeMate</span>
+        </a>
+    
+        <div class="space-x-8 flex items-center">
+            <a href="#benefits" class="text-gray-600 hover:text-gm-primary font-medium transition">Benefits</a>
+            <a href="#workflow" class="text-gray-600 hover:text-gm-primary font-medium transition">Workflow</a>
+    
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" 
+                   class="px-5 py-2 bg-gm-primary text-white rounded-xl font-semibold hover:bg-gm-primary/90 transition">
+                    Logout
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" class="text-gray-700 hover:text-gm-primary font-medium transition hidden md:inline">
+                    Log In
+                </a>
+                <a href="{% url 'register' %}" 
+                   class="px-5 py-2 bg-gm-primary text-white rounded-xl font-semibold hover:bg-gm-primary/90 transition shadow-lg shadow-indigo-500/30">
+                    Sign Up Free
+                </a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <!-- HERO SECTION -->
+    <section class="relative px-6 md:px-12 pt-32 pb-40 text-center bg-gray-50 overflow-hidden">
+
+        <div class="glow absolute top-1/4 left-1/4 w-96 h-96 bg-gm-light rounded-full"></div>
+        <div class="glow absolute bottom-0 right-1/4 w-72 h-72 bg-gm-primary rounded-full"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <p data-aos="fade-up" class="text-sm uppercase tracking-widest font-semibold text-gm-primary mb-4">
+                The Future of Academic Assessment
+            </p>
+            
+            <h2 data-aos="fade-up" data-aos-delay="100" class="text-7xl md:text-[5.5rem] font-extrabold leading-none text-gray-900 max-w-5xl mx-auto">
+                <span class="hero-gradient">Instant Feedback,</span>
+                <br> Fair Grading, Zero Delays.
+            </h2>
+
+            <p data-aos="fade-up" data-aos-delay="200" class="mt-8 text-xl text-gray-600 max-w-3xl mx-auto">
+                GradeMate automates grading and feedback using AI, reducing faculty workload by up to 80% 
+                while giving students real-time, actionable insights.
+            </p>
+
+            <div data-aos="fade-up" data-aos-delay="300" class="mt-12 flex justify-center gap-4">
+                <a href="{% url 'register' %}" 
+                   class="px-10 py-4 bg-gm-primary text-white rounded-xl text-xl font-bold hover:bg-gm-primary/90 transition-all transform hover:scale-[1.02] shadow-xl shadow-indigo-500/40">
+                    Get Started Now
+                </a>
+            </div>
+
+            <div data-aos="zoom-in" data-aos-delay="500" class="mt-28 max-w-6xl mx-auto rounded-3xl shadow-2xl shadow-indigo-400/30 overflow-hidden border-8 border-white">
+                <img src="https://i.pinimg.com/1200x/18/f0/c5/18f0c519c557e7394444ea514af1bef6.jpg" 
+                     alt="GradeMate Dashboard Preview" class="w-full h-auto object-cover" />
+            </div>
+        </div>
+    </section>
+
+
+    <!-- BENEFITS -->
+    <section id="benefits" class="px-6 md:px-12 py-32 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <h3 data-aos="fade-up" class="text-4xl font-bold text-center mb-20">The GradeMate Advantage</h3>
+
+            <div class="grid md:grid-cols-3 gap-12">
+                
+                <!-- Benefit Cards -->
+                <div data-aos="fade-up" class="text-center">
+                    <div class="w-16 h-16 bg-gm-primary/10 text-gm-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold">Massive Time Savings</h4>
+                    <p class="text-lg text-gray-600 mt-2">Automate grading and reduce workload by up to 80%.</p>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="150" class="text-center">
+                    <div class="w-16 h-16 bg-gm-primary/10 text-gm-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.673a9.962 9.962 0 01-1.05-3.355C3 8.03 7.03 4 12 4s9 4.03 9 8z"></path></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold">Learning Acceleration</h4>
+                    <p class="text-lg text-gray-600 mt-2">Students receive instant, meaningful feedback.</p>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="300" class="text-center">
+                    <div class="w-16 h-16 bg-gm-primary/10 text-gm-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.192-2.062-.572-3.004z"></path></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold">Trust & Transparency</h4>
+                    <p class="text-lg text-gray-600 mt-2">Fair grading validated through rule-based checks.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- WORKFLOW -->
+    <section id="workflow" class="px-6 md:px-12 py-32 bg-white">
+        <h3 data-aos="fade-up" class="text-4xl font-bold text-center mb-20">Simple 3-Step Workflow</h3>
+
+        <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-16">
+
+            <div data-aos="fade-up" class="text-center">
+                <div class="w-20 h-20 bg-gm-primary text-white rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span class="text-3xl font-extrabold">1</span>
+                </div>
+                <h4 class="text-2xl font-bold">Submit</h4>
+                <p class="text-gray-600 mt-2">Students securely upload assignments.</p>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="150" class="text-center">
+                <div class="w-20 h-20 bg-gm-primary text-white rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span class="text-3xl font-extrabold">2</span>
+                </div>
+                <h4 class="text-2xl font-bold">Evaluate</h4>
+                <p class="text-gray-600 mt-2">AI predicts grades + validates rubrics.</p>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="300" class="text-center">
+                <div class="w-20 h-20 bg-gm-primary text-white rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span class="text-3xl font-extrabold">3</span>
+                </div>
+                <h4 class="text-2xl font-bold">Receive</h4>
+                <p class="text-gray-600 mt-2">Both sides receive detailed feedback instantly.</p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- CTA -->
+    <section class="px-6 md:px-12 py-24 text-center bg-gm-primary text-white">
+        <h3 class="text-5xl font-bold">Ready to Elevate Your Classroom?</h3>
+        <p class="mt-4 text-xl text-indigo-200">
+            Stop grading, start teaching. GradeMate brings efficiency now.
+        </p>
+
+        <a href="{% url 'register' %}" 
+            class="mt-12 inline-block px-12 py-4 bg-white text-gm-primary rounded-xl font-bold text-xl hover:bg-gray-200 transition transform hover:scale-[1.05] shadow-xl">
+            Start Your Free Trial
+        </a>
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="py-16 bg-gray-900 text-gray-400">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
+
+            <div class="col-span-2 md:col-span-1">
+                <h4 class="text-3xl font-extrabold text-white mb-3">GradeMate</h4>
+                <p class="text-sm">&copy; 2025 GradeMate. All rights reserved.</p>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Product</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#benefits" class="hover:text-white">Benefits</a></li>
+                    <li><a href="#workflow" class="hover:text-white">Workflow</a></li>
+                    <li><a href="#" class="hover:text-white">Pricing</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Company</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white">About</a></li>
+                    <li><a href="#" class="hover:text-white">Contact</a></li>
+                    <li><a href="#" class="hover:text-white">AI Ethics</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Resources</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white">Documentation</a></li>
+                    <li><a href="#" class="hover:text-white">Privacy</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </footer>
+
+
+    <!-- AOS Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true,
+        });
+    </script>
+
+</body>
+</html>

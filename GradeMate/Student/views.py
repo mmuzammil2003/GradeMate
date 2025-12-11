@@ -12,6 +12,7 @@ from Teacher.models import Assignment, Subject, Classroom, Notification
 from Teacher.utils import find_students_for_classroom
 from .services.ai_evaluator import evaluate_answer
 from .services.ocr import extract_text_from_file
+from .services.plagiarism import check_plagiarism
 
 # Create your views here.
 
@@ -427,6 +428,36 @@ class SubmitAssignmentView(LoginRequiredMixin, TemplateView):
                             assignment.key_answer_text = key_answer_text
                 except Exception as e:
                     print(f"⚠️ Could not extract text from key answer file: {e}")
+            
+            # Check for duplicate/plagiarized submissions before grading
+            if submission.answer_text and submission.answer_text.strip():
+                other_answers_qs = StudentAssignment.objects.filter(
+                    assignment=assignment
+                ).exclude(id=submission.id).exclude(
+                    answer_text__isnull=True
+                ).exclude(
+                    answer_text__exact=''
+                )
+                
+                if other_answers_qs.exists():
+                    other_answers = list(other_answers_qs.values_list('answer_text', flat=True))
+                    try:
+                        if check_plagiarism(submission.answer_text, other_answers):
+                            submission.plagiarism = True
+                            submission.is_graded = False
+                            submission.score = 0
+                            submission.feedback = ''
+                            submission.evaluated_at = None
+                            submission.save(update_fields=['plagiarism', 'is_graded', 'score', 'feedback', 'evaluated_at'])
+                            
+                            messages.error(
+                                request,
+                                'Submission rejected because it matches another student\'s submission. Please submit your own work.'
+                            )
+                            return redirect('Student:assignment_detail', pk=assignment.pk)
+                    except Exception as e:
+                        print(f"⚠️ Error during plagiarism check for submission {submission.pk}: {e}")
+                        # Continue with evaluation but mark as not graded yet
             
             # Evaluate using AI if we have both key answer and student answer
             if key_answer_text and key_answer_text.strip() and submission.answer_text and submission.answer_text.strip():

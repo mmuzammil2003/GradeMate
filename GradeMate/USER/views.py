@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -43,3 +43,7 @@ class CustomLogoutView(LoginRequiredMixin, LogoutView):
             logout(request)
             return redirect(self.next_page)
         return super().dispatch(request, *args, **kwargs)
+
+
+class HomeView(TemplateView):
+    template_name = "USER/home.html"
